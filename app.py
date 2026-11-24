@@ -234,3 +234,68 @@ st.caption(
     "Beyond Blacktop | Independent Computational "
     "Materials Science Project | Ava Williams"
 )
+# Interactive Sensitivity Analysis
+
+from sensitivity import albedo_sensitivity
+
+st.divider()
+
+st.header("Material Sensitivity Analysis")
+
+st.write(
+    "Investigate how solar reflectance affects "
+    "pavement temperatures while holding other "
+    "material properties constant."
+)
+
+sensitivity_df = albedo_sensitivity(initial_temp)
+
+fig, ax = plt.subplots(figsize=(10, 5))
+
+ax.plot(
+    sensitivity_df["Albedo"],
+    sensitivity_df["Peak Temperature"],
+    color="#438E79",
+    marker="o",
+    linewidth=2.5,
+    label="Peak Temperature"
+)
+
+ax.plot(
+    sensitivity_df["Albedo"],
+    sensitivity_df["Average Temperature"],
+    color="#C65F45",
+    linestyle="--",
+    linewidth=2,
+    label="Average Temperature"
+)
+
+ax.set_xlabel("Surface Albedo")
+ax.set_ylabel("Temperature (°C)")
+ax.set_title("Sensitivity of Surface Temperature to Albedo")
+ax.grid(alpha=0.2)
+ax.legend()
+
+fig.tight_layout()
+
+st.pyplot(fig)
+
+plt.close(fig)
+
+st.dataframe(
+    sensitivity_df.round(2),
+    hide_index=True
+)
+
+st.download_button(
+    label="Download Sensitivity Analysis",
+    data=sensitivity_df.to_csv(index=False),
+    file_name="albedo_sensitivity.csv",
+    mime="text/csv"
+)
+
+st.caption(
+    "Controlled computational experiment using "
+    "assumed asphalt properties and synthetic weather. "
+    "Not experimentally validated."
+)
